@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 11 Chemistry — Master Study App</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8eaf0;
+    --muted: #7b8099;
+    --hint: #4a5068;
+    --accent: #7c6df0;
+    --accent2: #5b9cf6;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --coral: #f87171;
+    --teal: #2dd4bf;
+    --purple: #a78bfa;
+    --pink: #f472b6;
+    --ch1: #7c6df0;
+    --ch2: #5b9cf6;
+    --ch3: #34d399;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.7; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,17,23,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0; padding: 0 1.5rem;
+    height: 52px; overflow-x: auto;
+  }
+  .nav-brand { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; margin-right: 1.5rem; letter-spacing: -0.01em; }
+  .nav-brand span { color: var(--accent); }
+  nav a { font-size: 12px; color: var(--muted); text-decoration: none; padding: 0 12px; height: 52px; display: flex; align-items: center; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+  nav a:hover, nav a.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    padding: 3rem 1.5rem 2.5rem;
+    max-width: 900px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { font-size: 14px; color: var(--muted); max-width: 560px; }
+
+  .stats-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1.5rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; }
+  .stat .s-val { font-size: 20px; font-weight: 600; color: var(--text); }
+  .stat .s-label { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* PROGRESS BAR */
+  .progress-section { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .prog-header span { font-size: 13px; color: var(--muted); }
+  .prog-header strong { font-size: 13px; color: var(--text); }
+  .prog-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 99px; transition: width 0.5s ease; width: 0%; }
+  .ch-progs { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  .ch-prog-item { flex: 1; min-width: 120px; }
+  .ch-prog-item .cpi-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .ch-prog-item .cpi-bar { height: 3px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .ch-prog-item .cpi-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
+
+  /* SECTIONS */
+  .section { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SCHEDULE */
+  .sched-grid { display: flex; flex-direction: column; gap: 6px; }
+  .sched-item { display: flex; gap: 14px; align-items: flex-start; padding: 10px 14px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+  .sched-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .sched-time { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); width: 120px; flex-shrink: 0; padding-top: 1px; line-height: 1.6; }
+  .sched-content { font-size: 13px; color: var(--text); flex: 1; line-height: 1.6; }
+  .sched-content strong { color: var(--accent); font-weight: 500; }
+  .sched-item.done-sched { opacity: 0.4; }
+  .sched-item.done-sched .sched-content { text-decoration: line-through; }
+
+  /* CHAPTER TABS */
+  .ch-tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .ch-tab { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border2); color: var(--muted); background: transparent; transition: all 0.15s; }
+  .ch-tab.active { color: var(--bg); }
+  .ch-tab[data-ch="1"].active { background: var(--ch1); border-color: var(--ch1); }
+  .ch-tab[data-ch="2"].active { background: var(--ch2); border-color: var(--ch2); color: #fff; }
+  .ch-tab[data-ch="3"].active { background: var(--ch3); border-color: var(--ch3); }
+  .ch-panel { display: none; }
+  .ch-panel.active { display: block; }
+
+  /* TOPICS */
+  .topic-group { margin-bottom: 1.25rem; }
+  .topic-group-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hint); font-weight: 600; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .topic-item { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; border-radius: 7px; cursor: pointer; transition: background 0.12s; border: 1px solid transparent; margin-bottom: 4px; }
+  .topic-item:hover { background: var(--surface); border-color: var(--border); }
+  .topic-item.checked { background: rgba(52,211,153,0.05); border-color: rgba(52,211,153,0.2); }
+  .topic-item.checked .t-text { text-decoration: line-through; color: var(--hint); }
+  .topic-cb { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .topic-item.checked .topic-cb { background: var(--green); border-color: var(--green); }
+  .topic-cb::after { content: ''; display: none; width: 5px; height: 8px; border: 2px solid #000; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); }
+  .topic-item.checked .topic-cb::after { display: block; }
+  .t-text { font-size: 13px; flex: 1; line-height: 1.5; color: var(--text); }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 99px; margin-left: 6px; vertical-align: middle; }
+  .badge.imp { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .badge.sure { background: rgba(248,113,113,0.15); color: var(--coral); border: 1px solid rgba(248,113,113,0.3); }
+  .badge.num { background: rgba(91,156,246,0.15); color: var(--accent2); }
+
+  /* CONTENT CARDS */
+  .content-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1rem; overflow: hidden; }
+  .content-card-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; cursor: pointer; user-select: none; }
+  .content-card-header h3 { font-size: 14px; font-weight: 500; color: var(--text); }
+  .content-card-header .toggle-icon { color: var(--muted); font-size: 14px; transition: transform 0.2s; }
+  .content-card-header.open .toggle-icon { transform: rotate(180deg); }
+  .content-card-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+  .content-card-body.open { display: block; }
+
+  /* NOTES/CONTENT */
+  .note { font-size: 13px; line-height: 1.8; color: var(--muted); }
+  .note strong { color: var(--text); font-weight: 500; }
+  .note .highlight { color: var(--teal); font-weight: 500; }
+  .note .warn { color: var(--amber); font-weight: 500; }
+  .note ul, .note ol { padding-left: 1.25rem; margin: 0.5rem 0; }
+  .note li { margin-bottom: 4px; }
+  .note .formula { font-family: 'JetBrains Mono', monospace; background: var(--surface2); color: var(--purple); padding: 2px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin: 2px 0; }
+  .note table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 0.75rem 0; }
+  .note table th { background: var(--surface2); color: var(--text); font-weight: 500; padding: 7px 10px; text-align: left; border: 1px solid var(--border); }
+  .note table td { padding: 6px 10px; border: 1px solid var(--border); color: var(--muted); }
+  .note table tr:hover td { background: var(--surface2); }
+  .note .tip { background: rgba(124,109,240,0.1); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 8px 12px; margin: 10px 0; font-size: 12px; color: var(--text); }
+  .note .warning-box { background: rgba(251,191,36,0.08); border-left: 3px solid var(--amber); border-radius: 0 6px 6px 0; padding: 8px 12px; margin: 10px 0; font-size: 12px; color: var(--text); }
+
+  /* CHEATSHEET */
+  .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .formula-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .formula-card .fc-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .formula-card .fc-formula { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--purple); line-height: 1.6; }
+  .formula-card .fc-note { font-size: 11px; color: var(--hint); margin-top: 4px; }
+
+  /* TREND TABLE */
+  .trend-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .trend-table th { background: var(--surface2); color: var(--accent); font-weight: 600; padding: 8px 10px; text-align: left; border: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .trend-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+  .trend-table tr:hover td { background: rgba(255,255,255,0.03); color: var(--text); }
+  .arrow-up { color: var(--green); font-weight: 600; }
+  .arrow-down { color: var(--coral); font-weight: 600; }
+
+  /* QUICK SEARCH */
+  .search-wrap { position: relative; margin-bottom: 1.5rem; }
+  .search-input { width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 14px 10px 38px; font-size: 13px; color: var(--text); outline: none; font-family: inherit; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; }
+  .search-input::placeholder { color: var(--hint); }
+
+  /* IMP QUESTIONS */
+  .q-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .q-header { padding: 11px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .q-header .q-text { font-size: 13px; color: var(--text); flex: 1; line-height: 1.5; }
+  .q-header .q-marks { font-size: 11px; color: var(--amber); font-weight: 600; white-space: nowrap; }
+  .q-answer { display: none; padding: 0 14px 12px; border-top: 1px solid var(--border); }
+  .q-answer.open { display: block; }
+  .q-answer p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-top: 10px; }
+  .q-answer p strong { color: var(--text); font-weight: 500; }
+  .q-toggle { color: var(--muted); font-size: 12px; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
+  .q-header.open .q-toggle { transform: rotate(180deg); }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 2rem 1rem; font-size: 12px; color: var(--hint); border-top: 1px solid var(--border); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 1rem 1.5rem; }
+    .section { padding: 1.5rem 1rem; }
+    .sched-time { width: 90px; font-size: 10px; }
+    .progress-section { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Chem<span>11</span></div>
+  <a href="#schedule" class="active">Schedule</a>
+  <a href="#ch1">Ch 1</a>
+  <a href="#ch2">Ch 2</a>
+  <a href="#ch3">Ch 3</a>
+  <a href="#cheatsheet">Cheat Sheet</a>
+  <a href="#trends">Trends</a>
+  <a href="#questions">Imp Qs</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Class 11 Chemistry — NCERT</div>
+  <h1>Master these 3 chapters<br><em>before tomorrow night.</em></h1>
+  <p>Complete study app covering Ch 1, 2 &amp; 3 — theory, formulas, periodic trends, important questions, and your personal progress tracker.</p>
+  <div class="stats-row">
+    <div class="stat"><div class="s-val">3</div><div class="s-label">Chapters</div></div>
+    <div class="stat"><div class="s-val">30</div><div class="s-label">Key topics</div></div>
+    <div class="stat"><div class="s-val" id="done-count">0</div><div class="s-label">Done so far</div></div>
+    <div class="stat"><div class="s-val" id="pct-hero">0%</div><div class="s-label">Progress</div></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section">
+  <div class="prog-header"><span>Overall progress</span><strong id="prog-label">0 / 30 topics</strong></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="ch-progs">
+    <div class="ch-prog-item">
+      <div class="cpi-label">Ch 1 — Basic Concepts</div>
+      <div class="cpi-bar"><div class="cpi-fill" id="cp1" style="background: var(--ch1); width:0%"></div></div>
+    </div>
+    <div class="ch-prog-item">
+      <div class="cpi-label">Ch 2 — Structure of Atom</div>
+      <div class="cpi-bar"><div class="cpi-fill" id="cp2" style="background: var(--ch2); width:0%"></div></div>
+    </div>
+    <div class="ch-prog-item">
+      <div class="cpi-label">Ch 3 — Periodicity</div>
+      <div class="cpi-bar"><div class="cpi-fill" id="cp3" style="background: var(--ch3); width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE -->
+<div class="section" id="schedule">
+  <div class="section-title">Study schedule</div>
+  <div class="sched-grid">
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch1)"></div>
+      <div class="sched-time">Today<br>Now → +4h</div>
+      <div class="sched-content"><strong>Ch 1 Theory:</strong> Mole concept, laws of combination, atomic/molecular mass, stoichiometry. Read + make short notes.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch1)"></div>
+      <div class="sched-time">Today<br>+4h → +6h</div>
+      <div class="sched-content"><strong>Ch 1 Numericals:</strong> Empirical formula, % composition, limiting reagent, molarity problems. Solve 10 questions.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch1)"></div>
+      <div class="sched-time">Today<br>+6h → +7h</div>
+      <div class="sched-content"><strong>Ch 1 Revision:</strong> Review all formulas. Check cheat sheet in this app. Mark weak topics.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch2)"></div>
+      <div class="sched-time">Tomorrow<br>Morning (3h)</div>
+      <div class="sched-content"><strong>Ch 2 Theory:</strong> Discovery of subatomic particles, Bohr model, dual nature, Heisenberg, quantum numbers.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch2)"></div>
+      <div class="sched-time">Tomorrow<br>Mid-day (2h)</div>
+      <div class="sched-content"><strong>Ch 2 Numericals + PYQs:</strong> Orbitals, aufbau, electronic configurations, exceptions (Cr &amp; Cu). Practice questions.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--ch3)"></div>
+      <div class="sched-time">Tomorrow<br>Afternoon (2.5h)</div>
+      <div class="sched-content"><strong>Ch 3 Theory:</strong> Periodic table blocks, all periodic trends — IE, electronegativity, atomic radius, electron gain enthalpy.</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-dot" style="background:var(--teal)"></div>
+      <div class="sched-time">Tomorrow<br>Evening (1.5h)</div>
+      <div class="sched-content"><strong>Final Revision:</strong> Cheat sheet, trend table, all important Qs from this app. Rapid-fire recall on all 3 chapters.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTERS -->
+<div class="section" id="ch1">
+  <div class="section-title">Chapters — study material &amp; checklist</div>
+  <div class="ch-tabs">
+    <button class="ch-tab active" data-ch="1" onclick="switchCh(1)">Ch 1 — Basic Concepts</button>
+    <button class="ch-tab" data-ch="2" onclick="switchCh(2)">Ch 2 — Structure of Atom</button>
+    <button class="ch-tab" data-ch="3" onclick="switchCh(3)">Ch 3 — Periodicity</button>
+  </div>
+
+  <!-- CH 1 -->
+  <div class="ch-panel active" id="panel-1">
+    <div class="content-card">
+      <div class="content-card-header open" onclick="toggleCard(this)">
+        <h3>✅ Topic checklist — Ch 1</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body open">
+        <div class="topic-group">
+          <div class="topic-group-label">Core theory</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Importance &amp; scope of chemistry <span class="badge imp">important</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Laws: conservation of mass, definite proportions, multiple proportions, Gay-Lussac, Avogadro <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Dalton's atomic theory — postulates &amp; limitations</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Atomic mass, molecular mass, formula unit mass</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Mole concept &amp; Avogadro's number <span class="badge sure">sure shot</span></div>
+          </div>
+        </div>
+        <div class="topic-group">
+          <div class="topic-group-label">Numericals &amp; application</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">% composition &amp; empirical/molecular formula <span class="badge num">numericals</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Stoichiometry &amp; stoichiometric calculations <span class="badge sure">sure shot</span> <span class="badge num">numericals</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Limiting reagent problems <span class="badge num">numericals</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Concentration terms — molarity, molality, normality, ppm, mole fraction <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="1">
+            <div class="topic-cb"></div>
+            <div class="t-text">Significant figures &amp; SI units</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-card-header" onclick="toggleCard(this)">
+        <h3>📖 Key concepts &amp; theory — Ch 1</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body">
+        <div class="note">
+          <strong>Laws of Chemical Combination</strong>
+          <ul style="margin-top:6px;">
+            <li><strong>Law of Conservation of Mass</strong> (Lavoisier): Mass of reactants = mass of products.</li>
+            <li><strong>Law of Definite Proportions</strong> (Proust): A pure compound always has same elements in fixed ratio by mass.</li>
+            <li><strong>Law of Multiple Proportions</strong> (Dalton): When two elements form more than one compound, masses of one element that combine with fixed mass of other are in simple whole-number ratios. <em>Example: CO and CO₂.</em></li>
+            <li><strong>Gay-Lussac's Law</strong>: Gases combine in simple whole-number ratios of volumes.</li>
+            <li><strong>Avogadro's Law</strong>: Equal volumes of gases at same T &amp; P contain equal number of molecules.</li>
+          </ul>
+
+          <br><strong>Mole Concept</strong>
+          <div class="tip">1 mole = 6.022 × 10²³ particles (Avogadro's number). Molar mass in grams = molecular mass in u.</div>
+          <ul>
+            <li>Moles = <span class="formula">mass (g) / molar mass (g/mol)</span></li>
+            <li>Moles = <span class="formula">number of particles / 6.022×10²³</span></li>
+            <li>At STP: 1 mole of gas = <span class="formula">22.4 L</span></li>
+          </ul>
+
+          <br><strong>Empirical vs Molecular Formula</strong>
+          <ul>
+            <li><strong>Empirical formula</strong>: simplest whole-number ratio of atoms. Example: CH₂O for glucose.</li>
+            <li><strong>Molecular formula</strong>: actual number of atoms. Example: C₆H₁₂O₆ for glucose.</li>
+            <li><span class="formula">n = Molecular mass / Empirical formula mass</span></li>
+          </ul>
+
+          <br><strong>Stoichiometry</strong>
+          <ul>
+            <li>Coefficients in balanced equations = mole ratios.</li>
+            <li>Limiting reagent: the reactant that is consumed first and limits product formation.</li>
+            <li>% yield = <span class="formula">(actual yield / theoretical yield) × 100</span></li>
+          </ul>
+
+          <br><strong>Concentration Terms</strong>
+          <table>
+            <tr><th>Term</th><th>Formula</th><th>Units</th></tr>
+            <tr><td>Molarity (M)</td><td>moles of solute / volume of solution in L</td><td>mol/L</td></tr>
+            <tr><td>Molality (m)</td><td>moles of solute / mass of solvent in kg</td><td>mol/kg</td></tr>
+            <tr><td>Mole fraction (χ)</td><td>moles of component / total moles</td><td>dimensionless</td></tr>
+            <tr><td>ppm</td><td>mass of solute / mass of solution × 10⁶</td><td>mg/kg</td></tr>
+          </table>
+          <div class="warning-box">⚠️ Molarity changes with temperature (volume changes), but molality does NOT. Examiners love this distinction!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CH 2 -->
+  <div class="ch-panel" id="panel-2" id="ch2">
+    <div class="content-card">
+      <div class="content-card-header open" onclick="toggleCard(this)">
+        <h3>✅ Topic checklist — Ch 2</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body open">
+        <div class="topic-group">
+          <div class="topic-group-label">Discovery &amp; early models</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Discovery of electron (cathode ray), proton (anode ray), neutron (Chadwick)</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Thomson's plum-pudding model &amp; Rutherford's nuclear model + α-scattering experiment</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Bohr's model — postulates, energy levels, limitations <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Atomic spectra — emission &amp; absorption, Balmer/Lyman series <span class="badge num">numericals</span></div>
+          </div>
+        </div>
+        <div class="topic-group">
+          <div class="topic-group-label">Quantum mechanical model</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">de Broglie's dual nature of matter <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Heisenberg uncertainty principle <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Quantum numbers (n, l, ml, ms) — all four, allowed values <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Shapes of s, p, d orbitals</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Aufbau principle, Pauli exclusion principle, Hund's rule <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="2">
+            <div class="topic-cb"></div>
+            <div class="t-text">Electronic configurations — normal &amp; exceptions (Cr, Cu) <span class="badge imp">important</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-card-header" onclick="toggleCard(this)">
+        <h3>📖 Key concepts &amp; theory — Ch 2</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body">
+        <div class="note">
+          <strong>Bohr's Model (most important)</strong>
+          <ul style="margin-top:6px;">
+            <li>Electrons revolve in fixed circular orbits (stationary states) — no energy radiation.</li>
+            <li>Energy is emitted/absorbed only when electrons jump between levels.</li>
+            <li>Energy of nth orbit: <span class="formula">Eₙ = −13.6/n² eV</span> (for H-atom)</li>
+            <li>Radius of nth orbit: <span class="formula">rₙ = 0.529 × n² Å</span></li>
+            <li><strong>Limitations:</strong> can't explain multi-electron atoms, Zeeman effect, fine structure of spectra.</li>
+          </ul>
+          <div class="tip">Spectral series: Lyman (UV, n→1), Balmer (visible, n→2), Paschen (IR, n→3), Brackett (n→4), Pfund (n→5).</div>
+
+          <br><strong>de Broglie Equation</strong>
+          <div style="margin:6px 0;"><span class="formula">λ = h/mv = h/p</span> &nbsp; where h = 6.626 × 10⁻³⁴ J·s</div>
+          <p>Every particle has an associated wavelength. For macroscopic objects, λ is negligibly small.</p>
+
+          <br><strong>Heisenberg Uncertainty Principle</strong>
+          <div style="margin:6px 0;"><span class="formula">Δx · Δp ≥ h/4π</span></div>
+          <p>It is impossible to determine both position and momentum of an electron simultaneously with perfect accuracy.</p>
+
+          <br><strong>Quantum Numbers</strong>
+          <table>
+            <tr><th>QN</th><th>Name</th><th>Values</th><th>Meaning</th></tr>
+            <tr><td>n</td><td>Principal</td><td>1, 2, 3…</td><td>Shell / energy level</td></tr>
+            <tr><td>l</td><td>Azimuthal</td><td>0 to n−1</td><td>Subshell (0=s,1=p,2=d,3=f)</td></tr>
+            <tr><td>ml</td><td>Magnetic</td><td>−l to +l</td><td>Orbital orientation</td></tr>
+            <tr><td>ms</td><td>Spin</td><td>+½ or −½</td><td>Electron spin direction</td></tr>
+          </table>
+
+          <br><strong>Rules for Electronic Configuration</strong>
+          <ul>
+            <li><strong>Aufbau principle:</strong> Fill orbitals in increasing energy order: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p…</li>
+            <li><strong>Pauli exclusion:</strong> No two electrons in an atom can have same set of all 4 quantum numbers. Max 2 electrons per orbital (with opposite spins).</li>
+            <li><strong>Hund's rule:</strong> Electrons occupy all orbitals of a subshell singly before pairing begins. All singly-occupied orbitals have same spin.</li>
+          </ul>
+          <div class="warning-box">⚠️ Exceptions: Cr is [Ar] 3d⁵ 4s¹ (not 3d⁴ 4s²) and Cu is [Ar] 3d¹⁰ 4s¹ (not 3d⁹ 4s²). Half-filled and fully-filled subshells are extra stable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CH 3 -->
+  <div class="ch-panel" id="panel-3" id="ch3">
+    <div class="content-card">
+      <div class="content-card-header open" onclick="toggleCard(this)">
+        <h3>✅ Topic checklist — Ch 3</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body open">
+        <div class="topic-group">
+          <div class="topic-group-label">History &amp; table structure</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Döbereiner's triads, Newlands' law of octaves, Mendeleev's periodic table (merits &amp; demerits)</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Modern periodic law — long form periodic table, s/p/d/f blocks <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Nomenclature of elements with Z &gt; 100 (IUPAC rules)</div>
+          </div>
+        </div>
+        <div class="topic-group">
+          <div class="topic-group-label">Periodic properties (most important)</div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Atomic &amp; ionic radius — trends across period &amp; down group <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Ionization enthalpy (IE1, IE2) — trends, anomalies (B &lt; Be, O &lt; N) <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Electron gain enthalpy — trends, Cl &gt; F anomaly <span class="badge imp">important</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Electronegativity — Pauling scale, trends across period &amp; group <span class="badge sure">sure shot</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Valency &amp; oxidation states variation across a period</div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Metallic &amp; non-metallic character, diagonal relationship <span class="badge imp">important</span></div>
+          </div>
+          <div class="topic-item" onclick="toggleTopic(this)" data-group="3">
+            <div class="topic-cb"></div>
+            <div class="t-text">Chemical periodicity of oxides, hydrides &amp; chlorides</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-card-header" onclick="toggleCard(this)">
+        <h3>📖 Key concepts &amp; theory — Ch 3</h3>
+        <span class="toggle-icon">▾</span>
+      </div>
+      <div class="content-card-body">
+        <div class="note">
+          <strong>Modern Periodic Law</strong>
+          <p style="margin:6px 0;">Properties of elements are periodic functions of their <span class="highlight">atomic numbers</span> (not atomic masses like Mendeleev).</p>
+
+          <br><strong>Blocks of the Periodic Table</strong>
+          <table>
+            <tr><th>Block</th><th>Filling orbital</th><th>Groups</th><th>Example</th></tr>
+            <tr><td>s-block</td><td>s-orbital</td><td>1, 2</td><td>Na, Mg</td></tr>
+            <tr><td>p-block</td><td>p-orbital</td><td>13–18</td><td>C, O, Cl</td></tr>
+            <tr><td>d-block</td><td>d-orbital</td><td>3–12</td><td>Fe, Cu, Zn</td></tr>
+            <tr><td>f-block</td><td>f-orbital</td><td>lanthanides, actinides</td><td>La, U</td></tr>
+          </table>
+
+          <br><strong>Periodic Properties — Key Rules</strong>
+
+          <p><strong>Atomic Radius:</strong></p>
+          <ul>
+            <li>Across period (L→R): <span class="warn">decreases</span> — more protons, same shell, higher Zeff.</li>
+            <li>Down group: <span class="highlight">increases</span> — new shell added.</li>
+            <li>Cation radius &lt; parent atom; anion radius &gt; parent atom.</li>
+          </ul>
+
+          <p style="margin-top:8px;"><strong>Ionization Enthalpy (IE):</strong></p>
+          <ul>
+            <li>Across period (L→R): generally <span class="warn">increases</span>.</li>
+            <li>Down group: <span class="highlight">decreases</span>.</li>
+            <li><span class="warn">Anomalies:</span> IE of B &lt; Be (2p is easier to remove than 2s); IE of O &lt; N (paired electron in O repels, lowers IE).</li>
+          </ul>
+
+          <p style="margin-top:8px;"><strong>Electron Gain Enthalpy:</strong></p>
+          <ul>
+            <li>Generally becomes more negative across a period (easier to gain electron).</li>
+            <li><span class="warn">Key anomaly:</span> Electron gain enthalpy of Cl (−349 kJ/mol) is more negative than F (−328 kJ/mol). Why? F is very small, added electron faces more electron-electron repulsion in compact 2p orbital.</li>
+          </ul>
+
+          <p style="margin-top:8px;"><strong>Electronegativity:</strong></p>
+          <ul>
+            <li>Across period (L→R): <span class="warn">increases</span>. Down group: <span class="highlight">decreases</span>.</li>
+            <li>F is the most electronegative element (Pauling scale: 4.0).</li>
+            <li>Cs/Fr is the least electronegative metal.</li>
+          </ul>
+
+          <div class="tip">Diagonal relationship: Elements on diagonal in periodic table (Li-Mg, Be-Al, B-Si) show similar properties due to similar charge/radius ratio.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHEAT SHEET -->
+<div class="section" id="cheatsheet">
+  <div class="section-title">Formulas cheat sheet</div>
+  <div class="formula-grid">
+    <div class="formula-card">
+      <div class="fc-label">Moles from mass</div>
+      <div class="fc-formula">n = mass (g) / M (g/mol)</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Moles from particles</div>
+      <div class="fc-formula">n = N / 6.022×10²³</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Moles of gas at STP</div>
+      <div class="fc-formula">n = V (L) / 22.4</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Molarity</div>
+      <div class="fc-formula">M = n(solute) / V(L)</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Molality</div>
+      <div class="fc-formula">m = n(solute) / W(solvent, kg)</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Mole fraction</div>
+      <div class="fc-formula">χA = nA / (nA + nB)</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">% yield</div>
+      <div class="fc-formula">% = actual/theoretical × 100</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Empirical → Molecular</div>
+      <div class="fc-formula">n = M / EFM</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Bohr orbit energy (H)</div>
+      <div class="fc-formula">Eₙ = −13.6/n² eV</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Bohr orbit radius</div>
+      <div class="fc-formula">rₙ = 0.529 × n² Å</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">de Broglie wavelength</div>
+      <div class="fc-formula">λ = h / mv</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Heisenberg uncertainty</div>
+      <div class="fc-formula">Δx·Δp ≥ h/4π</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Max electrons in shell</div>
+      <div class="fc-formula">2n²</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Max orbitals in subshell</div>
+      <div class="fc-formula">2l + 1</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Energy of photon</div>
+      <div class="fc-formula">E = hν = hc/λ</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Wavenumber (Rydberg)</div>
+      <div class="fc-formula">ν̃ = RH(1/n₁²−1/n₂²)</div>
+      <div class="fc-note">RH = 1.097×10⁷ m⁻¹</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRENDS TABLE -->
+<div class="section" id="trends">
+  <div class="section-title">Periodic trends — quick reference</div>
+  <div style="overflow-x:auto;">
+    <table class="trend-table">
+      <tr>
+        <th>Property</th>
+        <th>Across period (L→R)</th>
+        <th>Down group</th>
+        <th>Key exceptions / notes</th>
+      </tr>
+      <tr>
+        <td><strong>Atomic radius</strong></td>
+        <td><span class="arrow-down">↓ Decreases</span></td>
+        <td><span class="arrow-up">↑ Increases</span></td>
+        <td>Noble gases have largest radius in their period (van der Waals)</td>
+      </tr>
+      <tr>
+        <td><strong>Ionic radius</strong></td>
+        <td>Cation &lt; atom; Anion &gt; atom</td>
+        <td><span class="arrow-up">↑ Increases</span></td>
+        <td>Iso-electronic ions: more protons → smaller radius</td>
+      </tr>
+      <tr>
+        <td><strong>Ionization enthalpy</strong></td>
+        <td><span class="arrow-up">↑ Increases</span> (generally)</td>
+        <td><span class="arrow-down">↓ Decreases</span></td>
+        <td>B &lt; Be (2p &lt; 2s); O &lt; N (paired e⁻ in O has repulsion)</td>
+      </tr>
+      <tr>
+        <td><strong>Electron gain enthalpy</strong></td>
+        <td>More negative (L→R)</td>
+        <td>Less negative</td>
+        <td>Cl &gt; F (F has high e⁻-e⁻ repulsion in small 2p). Noble gases are positive.</td>
+      </tr>
+      <tr>
+        <td><strong>Electronegativity</strong></td>
+        <td><span class="arrow-up">↑ Increases</span></td>
+        <td><span class="arrow-down">↓ Decreases</span></td>
+        <td>F is highest (4.0). Cs/Fr lowest. Noble gases not assigned.</td>
+      </tr>
+      <tr>
+        <td><strong>Metallic character</strong></td>
+        <td><span class="arrow-down">↓ Decreases</span></td>
+        <td><span class="arrow-up">↑ Increases</span></td>
+        <td>Na &gt; Mg &gt; Al &gt; Si &gt; P &gt; S &gt; Cl in period 3</td>
+      </tr>
+      <tr>
+        <td><strong>Non-metallic character</strong></td>
+        <td><span class="arrow-up">↑ Increases</span></td>
+        <td><span class="arrow-down">↓ Decreases</span></td>
+        <td>F is most non-metallic element</td>
+      </tr>
+      <tr>
+        <td><strong>Valency</strong></td>
+        <td>1→4 then 4→0 (for main groups)</td>
+        <td>Same group = same valency</td>
+        <td>Group 18 (noble gases) have valency 0</td>
+      </tr>
+      <tr>
+        <td><strong>Nature of oxides</strong></td>
+        <td>Basic → Amphoteric → Acidic</td>
+        <td>Becomes more basic</td>
+        <td>Na₂O (basic), Al₂O₃ (amphoteric), P₂O₅ (acidic)</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- IMPORTANT QUESTIONS -->
+<div class="section" id="questions">
+  <div class="section-title">Important exam questions (with answers)</div>
+
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Tap any question to reveal the answer.</div>
+
+  <div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Chapter 1</div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">Calculate the number of moles and molecules in 18 g of water.</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p><strong>Molar mass of H₂O</strong> = 2(1) + 16 = 18 g/mol<br>
+      Moles = mass / molar mass = 18/18 = <strong>1 mole</strong><br>
+      Molecules = 1 × 6.022×10²³ = <strong>6.022 × 10²³ molecules</strong></p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">State the law of conservation of mass and law of definite proportions with examples.</div>
+      <div class="q-marks">2 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p><strong>Law of conservation of mass:</strong> In a chemical reaction, total mass of reactants = total mass of products. Example: C + O₂ → CO₂ (12 + 32 = 44 g).<br><br>
+      <strong>Law of definite proportions:</strong> A pure compound always contains same elements in fixed ratio by mass regardless of source. Example: H₂O always has H:O = 1:8 by mass.</p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">A compound has 40% C, 6.67% H, 53.33% O. Find its empirical formula. (Molecular mass = 180). Find molecular formula.</div>
+      <div class="q-marks">5 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p>
+        <strong>Step 1 — Mole ratios:</strong><br>
+        C: 40/12 = 3.33 &nbsp; H: 6.67/1 = 6.67 &nbsp; O: 53.33/16 = 3.33<br><br>
+        <strong>Step 2 — Simplest ratio:</strong> Divide by smallest (3.33):<br>
+        C:H:O = 1:2:1 → <strong>Empirical formula = CH₂O</strong><br>
+        EFM = 12+2+16 = 30<br><br>
+        <strong>Step 3 — n:</strong> n = 180/30 = 6<br>
+        <strong>Molecular formula = C₆H₁₂O₆ (Glucose)</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">What is the difference between molarity and molality? Why does molality not change with temperature?</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p><strong>Molarity (M)</strong> = moles of solute / volume of solution (L). It changes with temperature because volume changes.<br><br>
+      <strong>Molality (m)</strong> = moles of solute / mass of solvent (kg). It does NOT change with temperature because mass is independent of temperature. Mass of solvent is constant regardless of T or P.</p>
+    </div>
+  </div>
+
+  <br><div style="font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Chapter 2</div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">State and explain Heisenberg's uncertainty principle. Why is it not applicable to macroscopic objects?</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p><strong>Statement:</strong> It is impossible to determine simultaneously, both the exact position (Δx) and exact momentum (Δp) of a microscopic particle: <strong>Δx·Δp ≥ h/4π</strong><br><br>
+      For macroscopic objects (like a ball), their masses are very large, so the uncertainty in position and momentum is negligibly small and has no practical significance. For electrons (very small mass), the uncertainty is significant relative to the size of atom.</p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">Write the electronic configuration of Cr (Z=24) and Cu (Z=29). Why are they exceptions to the Aufbau principle?</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p><strong>Cr (Z=24):</strong> [Ar] 3d⁵ 4s¹ (not [Ar] 3d⁴ 4s²)<br>
+      <strong>Cu (Z=29):</strong> [Ar] 3d¹⁰ 4s¹ (not [Ar] 3d⁹ 4s²)<br><br>
+      <strong>Reason:</strong> Half-filled (3d⁵) and fully-filled (3d¹⁰) subshells have extra stability due to:<br>
+      1. Symmetrical distribution of electrons<br>
+      2. Exchange energy — more possible exchanges = lower energy</p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">What are the four quantum numbers? Give the quantum numbers for the 19th electron in potassium (K).</div>
+      <div class="q-marks">4 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p>Four quantum numbers: n (principal), l (azimuthal), ml (magnetic), ms (spin).<br><br>
+      K (Z=19): [Ar] 4s¹. The 19th electron is in 4s¹.<br>
+      <strong>n = 4, l = 0, ml = 0, ms = +½</strong></p>
+    </div>
+  </div>
+
+  <br><div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Chapter 3</div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">Why does ionization energy of oxygen (O) is less than nitrogen (N), even though O comes after N in the period?</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p>Nitrogen has configuration 2p³ — all three 2p orbitals are half-filled (one electron each). This is extra stable.<br><br>
+      Oxygen has configuration 2p⁴ — one 2p orbital has a paired electron. This paired electron experiences electron-electron repulsion, making it easier to remove. Hence IE of O &lt; IE of N.</p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">Why is the electron gain enthalpy of chlorine (Cl) more negative than fluorine (F)?</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p>F is a very small atom (n=2 shell). When an electron is added to F, it enters the compact 2p subshell, which already has high electron density. This causes strong electron-electron repulsion, reducing the energy released.<br><br>
+      Cl has n=3 shell, which is larger. The incoming electron experiences less repulsion in the more diffuse 3p orbital. So more energy is released → electron gain enthalpy of Cl is more negative than F.</p>
+    </div>
+  </div>
+
+  <div class="q-item">
+    <div class="q-header" onclick="toggleQ(this)">
+      <div class="q-text">Explain the diagonal relationship with examples.</div>
+      <div class="q-marks">3 marks</div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer">
+      <p>Certain elements in period 2 show similarities in properties with elements diagonally below them in period 3. This is called diagonal relationship.<br><br>
+      Pairs: Li–Mg, Be–Al, B–Si<br><br>
+      <strong>Reason:</strong> These diagonal pairs have similar charge/radius ratios (ionic potential), leading to similar polarizing power and hence similar chemical behavior.<br><br>
+      Example: Both Li and Mg form nitrides directly with N₂; both have similar solubility behavior of their carbonates.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Class 11 Chemistry — Ch 1, 2 &amp; 3 · Study app · Made for your exam tomorrow night<br>
+  <span style="color:var(--accent);">Tick topics as you go · Progress saves automatically</span>
+</footer>
+
+<script>
+  function switchCh(n) {
+    document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ch-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.ch-tab[data-ch="${n}"]`).classList.add('active');
+    document.getElementById(`panel-${n}`).classList.add('active');
+  }
+
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    header.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  function toggleQ(header) {
+    const answer = header.nextElementSibling;
+    header.classList.toggle('open');
+    answer.classList.toggle('open');
+  }
+
+  const TOTALS = {1: 10, 2: 10, 3: 10};
+  const TOTAL = 30;
+
+  function loadProgress() {
+    const saved = JSON.parse(localStorage.getItem('chem11_progress') || '{}');
+    document.querySelectorAll('.topic-item').forEach((item, idx) => {
+      const key = 'topic_' + idx;
+      if (saved[key]) {
+        item.classList.add('checked');
+        item.querySelector('.topic-cb').style.background = 'var(--green)';
+        item.querySelector('.topic-cb').style.borderColor = 'var(--green)';
+        item.querySelector('.topic-cb').style.display = 'flex';
+        const after = item.querySelector('.topic-cb');
+        after.classList.add('ticked');
+      }
+    });
+    updateProgress();
+  }
+
+  function saveProgress() {
+    const saved = {};
+    document.querySelectorAll('.topic-item').forEach((item, idx) => {
+      saved['topic_' + idx] = item.classList.contains('checked');
+    });
+    localStorage.setItem('chem11_progress', JSON.stringify(saved));
+  }
+
+  function toggleTopic(item) {
+    item.classList.toggle('checked');
+    saveProgress();
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const allItems = document.querySelectorAll('.topic-item');
+    let total = 0;
+    allItems.forEach(i => { if(i.classList.contains('checked')) total++; });
+    const pct = Math.round((total / TOTAL) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = total + ' / ' + TOTAL + ' topics';
+    document.getElementById('done-count').textContent = total;
+    document.getElementById('pct-hero').textContent = pct + '%';
+
+    [1,2,3].forEach(g => {
+      const items = document.querySelectorAll(`.topic-item[data-group="${g}"]`);
+      let done = 0;
+      items.forEach(i => { if(i.classList.contains('checked')) done++; });
+      const gPct = Math.round((done / items.length) * 100);
+      document.getElementById('cp' + g).style.width = gPct + '%';
+    });
+  }
+
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', function() {
+      document.querySelectorAll('nav a').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  loadProgress();
+</script>
+</body>
+</html>
